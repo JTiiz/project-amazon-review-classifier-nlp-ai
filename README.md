@@ -47,7 +47,7 @@ flowchart LR
 ### 1️⃣ Clona el repositorio
 
 ```bash
-git clone <url-del-repositorio>
+git clone https://github.com/JTiiz/project-amazon-review-classifier-nlp-ai.git
 cd project-amazon-review-classifier-nlp-ai
 ```
 
