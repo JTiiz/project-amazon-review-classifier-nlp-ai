@@ -51,7 +51,8 @@ class BlogGenerator:
         emoji_instr = "Include relevant emojis throughout the text. 🚀⚡" if include_emojis else "DO NOT use any emojis. Keep the text strictly professional."
         cit_instr = (
             "MANDATORY: Provide GROUNDED TRUTH. Every single claim, statistic, or growth trend must be followed by a "
-            "verifiable, real-world source link: [Source Name](URL). "
+            "source, written as a markdown link to the source's HOME PAGE only, e.g. [Statista](https://www.statista.com); "
+            "never write deep links or long URLs. "
             "Focus on high-authority sources (e.g., Bloomberg, Statista, Gartner). "
             "Include a 'Grounded Data Sources & Strategic Citations' section at the end. Failure to cite results in a rejected report."
         ) if include_citations else "Focus on original analysis only; no formal citations needed."
@@ -68,6 +69,8 @@ class BlogGenerator:
         completion = self._client.chat.completions.create(
             model=active_model,
             temperature=0.7,
+            max_tokens=4000,         # hard stop if the model starts looping
+            frequency_penalty=0.3,   # discourages repeated tokens (e.g. runaway URLs)
             stream=True,
             messages=[
                 {

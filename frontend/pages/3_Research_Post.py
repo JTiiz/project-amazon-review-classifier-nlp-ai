@@ -10,6 +10,11 @@ from logic.openai_client import BlogGenerator
 from logic.research import ResearchGenerator
 from logic.styles import apply_shared_styles, navigation_footer, apply_aura_animation, apply_synthesis_animation
 
+def escape_dollars(stream):
+    """Streamlit renders $...$ as LaTeX, which garbles prices like "$500 billion"."""
+    for chunk in stream:
+        yield chunk.replace("$", "\\$") if isinstance(chunk, str) else chunk
+
 # --- CONFIG & INITIALIZATION ---
 def get_blog_generator_v2():
     return BlogGenerator()
@@ -47,7 +52,7 @@ if "research_post_results" not in st.session_state:
                 product=params['product_name'], 
                 category=params['category_name']
             )
-            research_text = st.write_stream(research_stream)
+            research_text = st.write_stream(escape_dollars(research_stream))
         
         st.divider()
         
@@ -67,7 +72,7 @@ if "research_post_results" not in st.session_state:
                 include_comparison=params.get('include_comparison', False),
                 include_images=params.get('include_images', True)
             )
-            blog_text = st.write_stream(blog_stream)
+            blog_text = st.write_stream(escape_dollars(blog_stream))
         
         st.session_state["research_post_results"] = {
             "research": research_text,
